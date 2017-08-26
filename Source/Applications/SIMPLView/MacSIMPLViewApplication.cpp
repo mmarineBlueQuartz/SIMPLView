@@ -372,6 +372,7 @@ void MacSIMPLViewApplication::createGlobalMenu()
   QAction* actionShowBookmarks = menuItems->getActionShowBookmarks();
   QAction* actionAddBookmark = menuItems->getActionAddBookmark();
   QAction* actionNewFolder = menuItems->getActionNewFolder();
+  QAction* actionEnableFilter = menuItems->getActionEnableFilter();
 
   QAction* actionCut = menuItems->getActionCut();
   QAction* actionCopy = menuItems->getActionCopy();
@@ -399,6 +400,7 @@ void MacSIMPLViewApplication::createGlobalMenu()
   m_MenuEdit->addAction(actionCut);
   m_MenuEdit->addAction(actionCopy);
   m_MenuEdit->addAction(actionPaste);
+  m_MenuEdit->addAction(actionEnableFilter);
 
   // Create View Menu
   m_GlobalMenu->addMenu(m_MenuView);

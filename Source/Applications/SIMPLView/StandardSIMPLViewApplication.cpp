@@ -202,7 +202,7 @@ QMenuBar* StandardSIMPLViewApplication::getSIMPLViewMenuBar(SIMPLView_UI* instan
   QAction* actionPaste = menuItems->getActionPaste();
   QAction* actionUndo = instance->getPipelineViewWidget()->getActionUndo();
   QAction* actionRedo = instance->getPipelineViewWidget()->getActionRedo();
-  QAction* actionEnableFilter = instance->getPipelineViewWidget()->getActionEnableFilter();
+  QAction* actionEnableFilter = menuItems->getActionEnableFilter();
 
   actionUndo->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
   actionRedo->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
