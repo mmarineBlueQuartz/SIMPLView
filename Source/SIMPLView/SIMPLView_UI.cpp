@@ -65,7 +65,7 @@
 #include "SIMPLib/Plugin/PluginManager.h"
 #include "SIMPLib/Utilities/SIMPLDataPathValidator.h"
 
-#include "SVWidgetsLib/Animations/PipelineItemBorderSizeAnimation.h"
+//#include "SVWidgetsLib/Animations/PipelineItemBorderSizeAnimation.h"
 #include "SVWidgetsLib/Core/FilterWidgetManager.h"
 #include "SVWidgetsLib/Dialogs/AboutPlugins.h"
 #include "SVWidgetsLib/QtSupport/QtSMacros.h"
@@ -548,7 +548,7 @@ void SIMPLView_UI::setupGui()
 
   // Create the model
   PipelineModel* model = new PipelineModel(this);
-  model->setMaxNumberOfPipelines(1);
+  //model->setMaxNumberOfPipelines(1);
 
   viewWidget->setModel(model);
 
@@ -907,7 +907,7 @@ int SIMPLView_UI::openPipeline(const QString& filePath)
     PipelineModel* model = pipelineView->getPipelineModel();
     if (model->rowCount() > 0)
     {
-      QModelIndex index = model->index(0, PipelineItem::PipelineItemData::Contents);
+      QModelIndex index = model->index(0, AbstractPipelineItem::PipelineItemData::Contents);
       pipelineView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
     }
   }
@@ -1170,17 +1170,13 @@ void SIMPLView_UI::filterSelectionChanged(const QItemSelection& selected, const 
   QModelIndexList selectedIndexes = pipelineView->selectionModel()->selectedRows();
   qSort(selectedIndexes);
 
+#if 0
   // Animate a selection border for selected indexes
   for(const QModelIndex& index : selected.indexes())
   {
     new PipelineItemBorderSizeAnimation(pipelineModel, QPersistentModelIndex(index));
   }
-
-  // Remove selection border from deselected indexes
-  for(const QModelIndex& index : deselected.indexes())
-  {
-    pipelineModel->setData(index, -1, PipelineModel::Roles::BorderSizeRole);
-  }
+#endif
 
   if(selectedIndexes.size() == 1)
   {
