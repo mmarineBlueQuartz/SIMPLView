@@ -276,6 +276,7 @@ class SIMPLView_UI : public QMainWindow
      */
     void readVersionCheckSettings();
 
+#if 0
     /**
      * @brief pipelineDidFinish
      */
@@ -286,6 +287,7 @@ class SIMPLView_UI : public QMainWindow
      * @param msg
      */
     void processPipelineMessage(const PipelineMessage& msg);
+#endif
 
     /**
     * @brief setFilterInputWidget
