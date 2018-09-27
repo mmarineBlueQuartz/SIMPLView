@@ -543,9 +543,6 @@ void SIMPLView_UI::setupGui()
 
   SVPipelineView* viewWidget = m_Ui->pipelineListWidget->getPipelineView();
 
-  PipelineItemDelegate* delegate = new PipelineItemDelegate(viewWidget);
-  viewWidget->setItemDelegate(delegate);
-
   // Create the model
   PipelineModel* model = new PipelineModel(this);
   //model->setMaxNumberOfPipelines(1);
