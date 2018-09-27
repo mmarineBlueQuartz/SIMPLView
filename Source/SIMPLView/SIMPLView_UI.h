@@ -129,6 +129,11 @@ class SIMPLView_UI : public QMainWindow
     void writeSettings();
 
     /**
+     * @brief newPipeline
+     */
+    void createNewPipeline();
+
+    /**
      * @brief openPipeline
      * @param filePath
      * @return
@@ -348,7 +353,8 @@ class SIMPLView_UI : public QMainWindow
     QMenu*                                  m_MenuThemes = nullptr;
     QMenu*                                  m_MenuDataDirectory = nullptr;
 
-    QAction*                                m_ActionNew = nullptr;
+    QAction*                                m_ActionNewEditor = nullptr;
+    QAction*                                m_ActionNewPipeline = nullptr;
     QAction*                                m_ActionOpen = nullptr;
     QAction*                                m_ActionSave = nullptr;
     QAction*                                m_ActionSaveAs = nullptr;

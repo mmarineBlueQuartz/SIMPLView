@@ -304,7 +304,7 @@ bool SIMPLView_UI::savePipelineAs()
 void SIMPLView_UI::activateBookmark(const QString& filePath, bool execute)
 {
   SIMPLView_UI* instance = dream3dApp->getActiveInstance();
-  if(instance != nullptr && instance->isWindowModified() == false && instance->getPipelineModel()->isEmpty())
+  if(instance != nullptr && instance->isWindowModified() == false)// && instance->getPipelineModel()->isEmpty())
   {
     instance->openPipeline(filePath);
   }
@@ -653,7 +653,8 @@ void SIMPLView_UI::createSIMPLViewMenuSystem()
   m_MenuThemes = new QMenu("Themes", this);
   QMenu* menuRecentFiles = dream3dApp->getRecentFilesMenu();
 
-  m_ActionNew = new QAction("New...", this);
+  m_ActionNewEditor = new QAction("New Editor...", this);
+  m_ActionNewPipeline = new QAction("New Pipeline...", this);
   m_ActionOpen = new QAction("Open...", this);
   m_ActionSave = new QAction("Save", this);
   m_ActionSaveAs = new QAction("Save As...", this);
@@ -668,7 +669,8 @@ void SIMPLView_UI::createSIMPLViewMenuSystem()
   m_ActionClearCache = new QAction("Reset Preferences", this);
 
   // SIMPLView_UI Actions
-  connect(m_ActionNew, &QAction::triggered, dream3dApp, &SIMPLViewApplication::listenNewInstanceTriggered);
+  connect(m_ActionNewEditor, &QAction::triggered, dream3dApp, &SIMPLViewApplication::listenNewInstanceTriggered);
+  connect(m_ActionNewPipeline, &QAction::triggered, this, &SIMPLView_UI::createNewPipeline);
   connect(m_ActionOpen, &QAction::triggered, dream3dApp, &SIMPLViewApplication::listenOpenPipelineTriggered);
   connect(m_ActionSave, &QAction::triggered, this, &SIMPLView_UI::listenSavePipelineTriggered);
   connect(m_ActionSaveAs, &QAction::triggered, this, &SIMPLView_UI::listenSavePipelineAsTriggered);
@@ -680,7 +682,8 @@ void SIMPLView_UI::createSIMPLViewMenuSystem()
   connect(m_ActionPluginInformation, &QAction::triggered, dream3dApp, &SIMPLViewApplication::listenDisplayPluginInfoDialogTriggered);
   connect(m_ActionClearCache, &QAction::triggered, dream3dApp, &SIMPLViewApplication::listenClearSIMPLViewCacheTriggered);
 
-  m_ActionNew->setShortcut(QKeySequence::New);
+  m_ActionNewEditor->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_N);
+  m_ActionNewPipeline->setShortcut(QKeySequence::New);
   m_ActionOpen->setShortcut(QKeySequence::Open);
   m_ActionSave->setShortcut(QKeySequence::Save);
   m_ActionSaveAs->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
@@ -706,7 +709,8 @@ void SIMPLView_UI::createSIMPLViewMenuSystem()
 
   // Create File Menu
   m_SIMPLViewMenu->addMenu(m_MenuFile);
-  m_MenuFile->addAction(m_ActionNew);
+  m_MenuFile->addAction(m_ActionNewPipeline);
+  m_MenuFile->addAction(m_ActionNewEditor);
   m_MenuFile->addAction(m_ActionOpen);
   m_MenuFile->addSeparator();
   m_MenuFile->addAction(m_ActionSave);
@@ -890,6 +894,15 @@ void SIMPLView_UI::showDockWidget(QDockWidget* dockWidget)
   }
 
   dockWidget->raise();
+}
+
+// -----------------------------------------------------------------------------
+//
+// -----------------------------------------------------------------------------
+void SIMPLView_UI::createNewPipeline()
+{
+  SVPipelineView* pipelineView = m_Ui->pipelineView;
+  pipelineView->createNewPipeline();
 }
 
 // -----------------------------------------------------------------------------
