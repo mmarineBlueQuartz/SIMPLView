@@ -810,7 +810,7 @@ SIMPLView_UI* SIMPLViewApplication::getNewSIMPLViewInstance()
   SIMPLView_UI* newInstance = new SIMPLView_UI(nullptr);
   newInstance->setLoadedPlugins(plugins);
   newInstance->setAttribute(Qt::WA_DeleteOnClose);
-  newInstance->setWindowTitle("[*]Untitled Pipeline - " + BrandedStrings::ApplicationName);
+  newInstance->setWindowTitle(BrandedStrings::ApplicationName);
 
   if (m_ActiveWindow)
   {

@@ -390,7 +390,7 @@ class SIMPLView_UI : public QMainWindow
      * @brief savePipeline
      * @return
      */
-    bool savePipeline();
+    bool saveCurrentPipeline();
 
     /**
      * @brief saveAsPipeline

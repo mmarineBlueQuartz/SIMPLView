@@ -190,36 +190,27 @@ void SIMPLView_UI::resizeEvent(QResizeEvent* event)
 // -----------------------------------------------------------------------------
 void SIMPLView_UI::listenSavePipelineTriggered()
 {
-  savePipeline();
+  saveCurrentPipeline();
 }
 
 // -----------------------------------------------------------------------------
 //
 // -----------------------------------------------------------------------------
-bool SIMPLView_UI::savePipeline()
+bool SIMPLView_UI::saveCurrentPipeline()
 {
-  QString filePath;
-  if(windowFilePath().isEmpty())
+  SVPipelineView* viewWidget = m_Ui->pipelineView;
+  QString filePath = viewWidget->getCurrentFilePath();
+  if(filePath.isEmpty())
   {
     // When the file hasn't been saved before, the same functionality as a "Save As" occurs...
     return savePipelineAs();
-  }
-  else
-  {
-    filePath = windowFilePath();
   }
 
   // Fix the separators
   filePath = QDir::toNativeSeparators(filePath);
 
   // Write the pipeline
-  SVPipelineView* viewWidget = m_Ui->pipelineView;
-  viewWidget->writePipeline(filePath);
-
-  // Set window title and save flag
-  QFileInfo prefFileInfo = QFileInfo(filePath);
-  setWindowTitle("[*]" + prefFileInfo.baseName() + " - " + BrandedStrings::ApplicationName);
-  setWindowModified(false);
+  viewWidget->writeCurrentPipeline(filePath);
 
   // Add file to the recent files list
   QtSRecentFileList* list = QtSRecentFileList::Instance();
@@ -260,19 +251,13 @@ bool SIMPLView_UI::savePipelineAs()
 
   // Write the pipeline
   SVPipelineView* viewWidget = m_Ui->pipelineView;
-  int err = viewWidget->writePipeline(filePath);
+  int err = viewWidget->writeCurrentPipeline(filePath);
 
   if(err >= 0)
   {
-    // Set window title and save flag
-    setWindowTitle("[*]" + fi.baseName() + " - " + BrandedStrings::ApplicationName);
-    setWindowModified(false);
-
     // Add file to the recent files list
     QtSRecentFileList* list = QtSRecentFileList::Instance();
     list->addFile(filePath);
-
-    setWindowFilePath(filePath);
   }
   else
   {
@@ -656,8 +641,8 @@ void SIMPLView_UI::createSIMPLViewMenuSystem()
   m_ActionNewEditor = new QAction("New Editor...", this);
   m_ActionNewPipeline = new QAction("New Pipeline...", this);
   m_ActionOpen = new QAction("Open...", this);
-  m_ActionSave = new QAction("Save", this);
-  m_ActionSaveAs = new QAction("Save As...", this);
+  m_ActionSave = new QAction("Save Current Pipeline", this);
+  m_ActionSaveAs = new QAction("Save Current Pipeline As...", this);
   m_ActionLoadTheme = new QAction("Load Theme", this);
   m_ActionSaveTheme = new QAction("Save Theme", this);
   m_ActionClearRecentFiles = new QAction("Clear Recent Files", this);
@@ -814,10 +799,10 @@ void SIMPLView_UI::connectSignalsSlots()
   connect(docRequester, SIGNAL(showFilterDocUrl(const QUrl&)), this, SLOT(showFilterHelpUrl(const QUrl&)));
 
   /* Filter Library Widget Connections */
-  connect(m_Ui->filterLibraryWidget, &FilterLibraryToolboxWidget::filterItemDoubleClicked, pipelineView, &SVPipelineView::addFilterFromClassName);
+  connect(m_Ui->filterLibraryWidget, &FilterLibraryToolboxWidget::filterItemDoubleClicked, [=](const QString& filterName) { pipelineView->addFilterFromClassName(filterName); });
 
   /* Filter List Widget Connections */
-  connect(m_Ui->filterListWidget, &FilterListToolboxWidget::filterItemDoubleClicked, pipelineView, &SVPipelineView::addFilterFromClassName);
+  connect(m_Ui->filterListWidget, &FilterListToolboxWidget::filterItemDoubleClicked, [=](const QString& filterName) { pipelineView->addFilterFromClassName(filterName); });
 
   /* Bookmarks Widget Connections */
   connect(m_Ui->bookmarksWidget, &BookmarksToolboxWidget::bookmarkActivated, this, &SIMPLView_UI::activateBookmark);
@@ -855,7 +840,7 @@ void SIMPLView_UI::connectSignalsSlots()
 
   //connect(pipelineView, &SVPipelineView::pipelineHasMessage, this, &SIMPLView_UI::processPipelineMessage);
   //connect(pipelineView, &SVPipelineView::pipelineFinished, this, &SIMPLView_UI::pipelineDidFinish);
-  connect(pipelineView, &SVPipelineView::pipelineFilePathUpdated, this, &SIMPLView_UI::setWindowFilePath);
+  //connect(pipelineView, &SVPipelineView::pipelineFilePathUpdated, this, &SIMPLView_UI::setWindowFilePath);
 
   connect(pipelineView, &SVPipelineView::pipelineChanged, this, &SIMPLView_UI::handlePipelineChanges);
   connect(pipelineView, &SVPipelineView::filePathOpened, [=](const QString& filePath) { m_LastOpenedFilePath = filePath; });
@@ -922,11 +907,6 @@ int SIMPLView_UI::openPipeline(const QString& filePath)
     }
   }
 
-  QFileInfo fi(filePath);
-  setWindowTitle(QString("[*]") + fi.baseName() + " - " + QApplication::applicationName());
-  setWindowFilePath(filePath);
-  setWindowModified(false);
-
   return err;
 }
 
@@ -988,7 +968,7 @@ QMessageBox::StandardButton SIMPLView_UI::checkDirtyDocument()
                                  QMessageBox::Discard, QMessageBox::Cancel | QMessageBox::Escape);
     if(r == QMessageBox::Save)
     {
-      if(savePipeline() == true)
+      if(saveCurrentPipeline() == true)
       {
         return QMessageBox::Save;
       }
