@@ -289,7 +289,7 @@ bool SIMPLView_UI::savePipelineAs()
 void SIMPLView_UI::activateBookmark(const QString& filePath, bool execute)
 {
   SIMPLView_UI* instance = dream3dApp->getActiveInstance();
-  if(instance != nullptr && instance->isWindowModified() == false)// && instance->getPipelineModel()->isEmpty())
+  if(instance != nullptr)
   {
     instance->openPipeline(filePath);
   }
