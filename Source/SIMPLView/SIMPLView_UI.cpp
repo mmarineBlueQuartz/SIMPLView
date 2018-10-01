@@ -528,12 +528,6 @@ void SIMPLView_UI::setupGui()
 
   SVPipelineView* viewWidget = m_Ui->pipelineView;
 
-  // Create the model
-  PipelineModel* model = new PipelineModel(this);
-  //model->setMaxNumberOfPipelines(1);
-
-  viewWidget->setModel(model);
-
   // Set the IssuesWidget as a PipelineMessageObserver Object.
   viewWidget->addPipelineMessageObserver(m_IssuesUi->issuesWidget);
 
